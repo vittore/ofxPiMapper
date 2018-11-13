@@ -51,6 +51,12 @@ class MediaServer {
 		void setup();
 		void update();
 		void draw();
+        void togglePlay();
+    
+        void play();
+        void restart();
+        void pause();
+        void resume();
 
 		int getNumVideos();
 		int getNumImages();

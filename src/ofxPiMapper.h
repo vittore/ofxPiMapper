@@ -16,7 +16,12 @@ class ofxPiMapper {
 		void setup();
 		void update();
 		void draw();
-
+        void togglePlay();
+        void play();
+        void restart();
+        void pause();
+        void resume();
+    
 		void keyPressed(int key);
 		void keyReleased(int key);
 

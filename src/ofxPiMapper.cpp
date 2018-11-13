@@ -14,6 +14,25 @@ void ofxPiMapper::draw(){
 	_application.draw();
 }
 
+void ofxPiMapper::togglePlay() {
+    _application.togglePlay();
+}
+
+void ofxPiMapper::play() {
+    _application.play();
+}
+
+void ofxPiMapper::restart() {
+    _application.restart();
+}
+
+void ofxPiMapper::pause() {
+    _application.pause();
+}
+
+void ofxPiMapper::resume() {
+    _application.resume();
+}
 void ofxPiMapper::keyPressed(int key){
 	ofKeyEventArgs args;
 	args.key = key;

@@ -30,7 +30,7 @@ void VideoSource::loadVideo(std::string & filePath){
 		_videoPlayer = make_unique<ofVideoPlayer>();
 		_videoPlayer->load(filePath);
 		_videoPlayer->setLoopState(OF_LOOP_NORMAL);
-		_videoPlayer->play();
+//        _videoPlayer->play();
 		_videoPlayer->setVolume(VideoSource::enableAudio ? 1.0f : 0.0f);
 		texture = &(_videoPlayer->getTexture());
 	#endif
@@ -39,6 +39,38 @@ void VideoSource::loadVideo(std::string & filePath){
 	loaded = true;
 }
 
+void VideoSource::play() {
+    #ifdef TARGET_RASPBERRY_PI
+        _omxPlayer->start();
+    #else
+        _videoPlayer->play();
+    #endif
+}
+    
+void VideoSource::restart() {
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->restartMovie();
+#else
+    _videoPlayer->setPosition(0);
+    _videoPlayer->play();
+#endif
+}
+
+void VideoSource::pause() {
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->setPaused(true);
+#else
+    _videoPlayer->setPaused(true);
+#endif
+}
+void VideoSource::resume() {
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->setPaused(false);
+#else
+    _videoPlayer->setPaused(false);
+#endif
+}
+    
 void VideoSource::setLoop(bool loop){
 	_loop = loop;
 	#ifndef TARGET_RASPBERRY_PI

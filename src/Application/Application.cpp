@@ -77,6 +77,25 @@ void Application::draw(){
 	_info.draw();
 }
 
+void Application::togglePlay() {
+    _mediaServer.togglePlay();
+}
+    
+void Application::play() {
+    _mediaServer.play();
+}
+void Application::restart() {
+    _mediaServer.restart();
+}
+
+void Application::pause() {
+    _mediaServer.pause();
+}
+
+void Application::resume() {
+    _mediaServer.resume();
+}
+    
 // Here we handle application state changes only
 void Application::onKeyPressed(ofKeyEventArgs & args){
 

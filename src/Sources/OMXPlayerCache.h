@@ -15,6 +15,7 @@ class OMXPlayerCache {
 		static OMXPlayerCache * instance();
 		ofxOMXPlayer * load(std::string moviePath);
 		void unload(std::string moviePath);
+        void play();
 
 	private:
 		static OMXPlayerCache * _instance;

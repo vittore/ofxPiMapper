@@ -70,6 +70,11 @@ class Application {
 		void setup();
 		void update();
 		void draw();
+        void togglePlay();
+        void play();
+        void restart();
+        void pause();
+        void resume();
 
 		void onKeyPressed(ofKeyEventArgs & args);
 		void onKeyReleased(ofKeyEventArgs & args);
