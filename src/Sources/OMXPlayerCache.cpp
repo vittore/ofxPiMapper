@@ -22,7 +22,6 @@ ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
 		settings.enableTexture = true;
 		settings.enableLooping = true;
 		settings.enableAudio = VideoSource::enableAudio;
-        settings.autoStart = false;
 		
 		ofxOMXPlayer * p = new ofxOMXPlayer();
 		p->setup(settings);
@@ -31,7 +30,7 @@ ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
 		return p;
 	}
 	
-	_players[moviePath]->restartMovie();
+//    _players[moviePath]->restartMovie();
 	return _players[moviePath];
 }
 
