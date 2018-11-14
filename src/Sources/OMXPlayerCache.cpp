@@ -22,6 +22,7 @@ ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
 		settings.enableTexture = true;
 		settings.enableLooping = true;
 		settings.enableAudio = VideoSource::enableAudio;
+        settings.autoStart = false;
 		
 		ofxOMXPlayer * p = new ofxOMXPlayer();
 		p->setup(settings);

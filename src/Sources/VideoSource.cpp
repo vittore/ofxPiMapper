@@ -41,7 +41,7 @@ void VideoSource::loadVideo(std::string & filePath){
 
 void VideoSource::play() {
     #ifdef TARGET_RASPBERRY_PI
-        _omxPlayer->restartMovie();
+        _omxPlayer->start();
     #else
         _videoPlayer->play();
     #endif
