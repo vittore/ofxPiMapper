@@ -30,7 +30,7 @@ void VideoSource::loadVideo(std::string & filePath){
 		_videoPlayer = make_unique<ofVideoPlayer>();
 		_videoPlayer->load(filePath);
 		_videoPlayer->setLoopState(OF_LOOP_NORMAL);
-//        _videoPlayer->play();
+        _videoPlayer->play();
 		_videoPlayer->setVolume(VideoSource::enableAudio ? 1.0f : 0.0f);
 		texture = &(_videoPlayer->getTexture());
 	#endif
