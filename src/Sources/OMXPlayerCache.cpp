@@ -27,7 +27,7 @@ ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
 		
 		ofxOMXPlayer * p = new ofxOMXPlayer();
         p->engine.m_config_audio.device="omx:alsa";
-//        p->engine.m_config_audio.subdevice ="hw:1,0";
+        p->engine.m_config_audio.subdevice ="hw:0,1";
 		p->setup(settings);
 		_players[moviePath] = p;
 		
