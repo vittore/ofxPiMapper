@@ -22,10 +22,12 @@ ofxOMXPlayer * OMXPlayerCache::load(std::string moviePath){
 		settings.enableTexture = true;
 		settings.enableLooping = true;
 		settings.enableAudio = VideoSource::enableAudio;
-        settings.initialVolume = 1.0;
+        settings.initialVolume = 0.3;
 //        settings.autoStart = true;
 		
 		ofxOMXPlayer * p = new ofxOMXPlayer();
+        p->engine.m_config_audio.device="omx:alsa";
+//        p->engine.m_config_audio.subdevice ="hw:1,0";
 		p->setup(settings);
 		_players[moviePath] = p;
 		
