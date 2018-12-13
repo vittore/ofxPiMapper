@@ -39,13 +39,7 @@ void VideoSource::loadVideo(std::string & filePath){
 	loaded = true;
 }
 
-void VideoSource::play() {
-    #ifdef TARGET_RASPBERRY_PI
-        _omxPlayer->start();
-    #else
-        _videoPlayer->play();
-    #endif
-}
+void VideoSource::play() {}
     
 void VideoSource::restart() {
 #ifdef TARGET_RASPBERRY_PI
@@ -70,7 +64,7 @@ void VideoSource::resume() {
     _videoPlayer->setPaused(false);
 #endif
 }
-    
+
 void VideoSource::setLoop(bool loop){
 	_loop = loop;
 	#ifndef TARGET_RASPBERRY_PI

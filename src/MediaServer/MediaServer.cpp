@@ -67,6 +67,7 @@ void MediaServer::play() {
         }
     }
 }
+
 void MediaServer::restart() {
     typedef map <std::string, BaseSource *>::iterator it_type;
     for(it_type i = loadedSources.begin(); i != loadedSources.end(); i++){
@@ -75,6 +76,7 @@ void MediaServer::restart() {
         }
     }
 }
+
 void MediaServer::pause() {
     typedef map <std::string, BaseSource *>::iterator it_type;
     for(it_type i = loadedSources.begin(); i != loadedSources.end(); i++){
@@ -83,6 +85,7 @@ void MediaServer::pause() {
         }
     }
 }
+    
 void MediaServer::resume() {
     typedef map <std::string, BaseSource *>::iterator it_type;
     for(it_type i = loadedSources.begin(); i != loadedSources.end(); i++){
@@ -91,8 +94,6 @@ void MediaServer::resume() {
         }
     }
 }
-
-    
     
 int MediaServer::getNumImages(){
 	
