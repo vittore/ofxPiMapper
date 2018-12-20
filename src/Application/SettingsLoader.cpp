@@ -81,7 +81,7 @@ bool SettingsLoader::load(
 							// Construct full path
 //                            std::string dir;
 //                            dir = mediaServer.getDefaultMediaDir(typeEnum);
-//                            
+//
 //                            std::stringstream pathss;
 //                            pathss << ofToDataPath(dir, true) << sourceName;
 //                            std::string sourcePath = pathss.str();
@@ -219,7 +219,13 @@ bool SettingsLoader::save(SurfaceManager & surfaceManager, std::string fileName)
 		std::string sourceTypeName = SourceTypeHelper::GetSourceTypeHelperName(surface->getSource()->getType());
 		
 		xmlSettings->addValue("source-type", sourceTypeName);
-		std::string sourceName = surface->getSource()->getPath();
+        std::string sourceName;
+        
+        if(surface->getSource()->getType() == SOURCE_TYPE_FBO){
+            sourceName = surface->getSource()->getName();
+        }else {
+            sourceName = surface->getSource()->getPath();
+        }
         
 		xmlSettings->addValue("source-name", (sourceName == "") ? "none" : sourceName);
 		
