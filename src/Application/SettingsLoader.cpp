@@ -79,13 +79,15 @@ bool SettingsLoader::load(
 						}else{
 				
 							// Construct full path
-							std::string dir = mediaServer.getDefaultMediaDir(typeEnum);
-							std::stringstream pathss;
-							pathss << ofToDataPath(dir, true) << sourceName;
-							std::string sourcePath = pathss.str();
+//                            std::string dir;
+//                            dir = mediaServer.getDefaultMediaDir(typeEnum);
+//                            
+//                            std::stringstream pathss;
+//                            pathss << ofToDataPath(dir, true) << sourceName;
+//                            std::string sourcePath = pathss.str();
 				
 							// Load media by using full path
-							source = mediaServer.loadMedia(sourcePath, typeEnum);
+							source = mediaServer.loadMedia(sourceName, typeEnum);
 							
 							if(typeEnum == SourceType::SOURCE_TYPE_VIDEO){
 								// Attempt to set loop for this type of source
@@ -217,7 +219,8 @@ bool SettingsLoader::save(SurfaceManager & surfaceManager, std::string fileName)
 		std::string sourceTypeName = SourceTypeHelper::GetSourceTypeHelperName(surface->getSource()->getType());
 		
 		xmlSettings->addValue("source-type", sourceTypeName);
-		std::string sourceName = surface->getSource()->getName();
+		std::string sourceName = surface->getSource()->getPath();
+        
 		xmlSettings->addValue("source-name", (sourceName == "") ? "none" : sourceName);
 		
 		if(surface->getSource()->getType() == SOURCE_TYPE_VIDEO){

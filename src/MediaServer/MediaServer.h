@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "DirectoryWatcher.h"
+#include "DirectoryViewer.h"
 
 #include "BaseSource.h"
 #include "ImageSource.h"
@@ -61,11 +62,16 @@ class MediaServer {
 		int getNumVideos();
 		int getNumImages();
 		int getNumFboSources(); // new
+        int getNumUsbMedias();
+    
+        void reloadMediaDirectory();
 		std::vector<std::string> & getVideoPaths();
 		std::vector<std::string>  getVideoNames();
 		std::vector<std::string> & getImagePaths();
 		std::vector<std::string>  getImageNames();
 		std::vector<std::string>  getFboSourceNames(); // new
+        std::vector<std::string> & getUsbMediaPaths();
+        std::vector<std::string> getUsbMediaNames();
 
 		BaseSource * loadMedia(std::string & path, int mediaType);
 		BaseSource * loadImage(std::string & path);
@@ -103,19 +109,21 @@ class MediaServer {
 
 	private:
 		// Directory Watchers
-		DirectoryWatcher videoWatcher;
+		DirectoryViewer videoWatcher;
 		DirectoryWatcher piVideoWatcher;
-		DirectoryWatcher usb0VideoWatcher;
-		DirectoryWatcher usb1VideoWatcher;
-		DirectoryWatcher usb2VideoWatcher;
-		DirectoryWatcher usb3VideoWatcher;
+//        DirectoryWatcher usb0VideoWatcher;
+//        DirectoryWatcher usb1VideoWatcher;
+//        DirectoryWatcher usb2VideoWatcher;
+//        DirectoryWatcher usb3VideoWatcher;
 	
-		DirectoryWatcher imageWatcher;
+		DirectoryViewer imageWatcher;
         DirectoryWatcher piImageWatcher;
-		DirectoryWatcher usb0ImageWatcher;
-		DirectoryWatcher usb1ImageWatcher;
-		DirectoryWatcher usb2ImageWatcher;
-		DirectoryWatcher usb3ImageWatcher;
+//        DirectoryWatcher usb0ImageWatcher;
+//        DirectoryWatcher usb1ImageWatcher;
+//        DirectoryWatcher usb2ImageWatcher;
+//        DirectoryWatcher usb3ImageWatcher;
+    
+        DirectoryViewer usbMediaViewer;
 	
         std::vector<std::string> _tempImagePaths;
         std::vector<std::string> _tempVideoPaths;

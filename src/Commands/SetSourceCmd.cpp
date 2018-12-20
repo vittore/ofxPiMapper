@@ -30,6 +30,8 @@ void SetSourceCmd::exec(){
 		_sourcesEditor->setVideoSource(_sourceId);
 	}else if(_sourceType == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_sourceId);
+    }else if(_sourceType == SourceType::SOURCE_TYPE_USB){
+        _sourcesEditor->setUsbSource(_sourceId);
 	}else if(_sourceType == SourceType::SOURCE_TYPE_NONE){
 		_sourcesEditor->clearSource();
 	}
@@ -44,6 +46,8 @@ void SetSourceCmd::undo(){
 		_sourcesEditor->setVideoSource(_oldSourceId);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_oldSourceId);
+    }else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_USB){
+        _sourcesEditor->setUsbSource(_oldSourceId);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_NONE){
 		_sourcesEditor->clearSource();
 	}

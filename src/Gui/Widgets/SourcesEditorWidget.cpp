@@ -8,17 +8,29 @@ SourcesEditorWidget::SourcesEditorWidget(){
 }
 
 void SourcesEditorWidget::setup(){
+    imageSelector = new RadioList();
+    videoSelector = new RadioList();
+    fboSelector = new RadioList();
+    usbSelector = new RadioList();
 	createSelectors();
 }
 
-void SourcesEditorWidget::createSelectors(){
-	imageSelector = new RadioList();
-	videoSelector = new RadioList();
-	fboSelector = new RadioList();
+void SourcesEditorWidget::destroySelectors(){
+    imageSelector->clear();
+    videoSelector->clear();
+    fboSelector->clear();
+    usbSelector->clear();
+}
 
+void SourcesEditorWidget::createSelectors(){
+    destroySelectors();
+    
+    mediaServer->reloadMediaDirectory();
+	
 	int numImages = mediaServer->getNumImages();
 	int numVideos = mediaServer->getNumVideos();
 	int numFbos = mediaServer->getNumFboSources();
+    int numUsb = mediaServer->getNumUsbMedias();
 
 	// Depending on media count, decide what to load and initialize
 	if(numImages){
@@ -37,6 +49,11 @@ void SourcesEditorWidget::createSelectors(){
 		fboSelector->setup("FBOs", fboNames, fboNames);
 		ofAddListener(fboSelector->onRadioSelected, this, &SourcesEditorWidget::handleFboSelected);
 	}
+    if(numUsb){
+        std::vector<std::string> usbNames = mediaServer->getUsbMediaNames();
+        usbSelector->setup("USB", usbNames, mediaServer->getUsbMediaPaths());
+        ofAddListener(usbSelector->onRadioSelected, this, &SourcesEditorWidget::handleUsbMediaSelected);
+    }
 
 	// Align menus
 	int menuPosX = 20;
@@ -51,7 +68,11 @@ void SourcesEditorWidget::createSelectors(){
 	}
 	if(numFbos){
 		fboSelector->setPosition(menuPosX, 20);
+        menuPosX += distX;
 	}
+    if(numUsb){
+        usbSelector->setPosition(menuPosX, 20);
+    }
 }
 
 void SourcesEditorWidget::draw(){
@@ -68,6 +89,9 @@ void SourcesEditorWidget::draw(){
 	if(fboSelector->size()){
 		fboSelector->draw();
 	}
+    if(usbSelector->size()){
+        usbSelector->draw();
+    }
 }
 
 // TODO: Redesign the selectors completely so they do not need enable and disable.
@@ -81,6 +105,9 @@ void SourcesEditorWidget::disable(){
 	if(fboSelector->size()){
 		fboSelector->disable();
 	}
+    if(usbSelector->size()){
+        usbSelector->disable();
+    }
 }
 
 void SourcesEditorWidget::enable(){
@@ -89,6 +116,8 @@ void SourcesEditorWidget::enable(){
 		ofLogNotice("SourcesEditorWidget") << "No surface selected. Not enabling and not showing source list.";
 		return;
 	}
+    createSelectors();
+    
 	if(imageSelector->size()){
 		imageSelector->enable();
 	}
@@ -98,6 +127,9 @@ void SourcesEditorWidget::enable(){
 	if(fboSelector->size()){
 		fboSelector->enable();
 	}
+    if(usbSelector->size()){
+        usbSelector->enable();
+    }
 	BaseSource * source = surfaceManager->getSelectedSurface()->getSource();
 
 	// TODO: getPath should be replaced with something like getId() as now we
@@ -147,12 +179,16 @@ void SourcesEditorWidget::selectSourceRadioButton(std::string & sourcePath){
 		if(fboSelector->size()){
 			fboSelector->unselectAll();
 		}
+        if(usbSelector->size()){
+            usbSelector->unselectAll();
+        }
 		return;
 	}else{
 		// Check image selector first
 		bool imageRadioSelected = false;
 		bool videoRadioSelected = false;
 		bool fboRadioSelected = false;
+        bool usbRadioSelected = false;
 		if(imageSelector->size()){
 			imageRadioSelected = imageSelector->selectItemByValue(sourcePath);
 		}
@@ -162,7 +198,10 @@ void SourcesEditorWidget::selectSourceRadioButton(std::string & sourcePath){
 		if(fboSelector->size()){
 			fboRadioSelected = fboSelector->selectItemByValue(sourcePath);
 		}
-		if(imageRadioSelected || videoRadioSelected || fboRadioSelected){
+        if(usbSelector->size()){
+            usbRadioSelected = usbSelector->selectItemByValue(sourcePath);
+        }
+		if(imageRadioSelected || videoRadioSelected || fboRadioSelected || usbRadioSelected){
 			return;
 		}
 		// Log warning if we are still here
@@ -221,6 +260,7 @@ void SourcesEditorWidget::setImageSource(std::string & imagePath){
 	// Unselect selected items
 	videoSelector->unselectAll();
 	fboSelector->unselectAll();
+    usbSelector->unselectAll();
 
 	BaseSurface * surface = surfaceManager->getSelectedSurface();
 	if(surface == 0){
@@ -251,6 +291,7 @@ void SourcesEditorWidget::setVideoSource(std::string & videoPath){
 	// Unselect any selected items
 	fboSelector->unselectAll();
 	imageSelector->unselectAll();
+    usbSelector->unselectAll();
 
 	BaseSurface * surface = surfaceManager->getSelectedSurface();
 	if(surface == 0){
@@ -280,6 +321,7 @@ void SourcesEditorWidget::handleFboSelected(std::string & fboName){
 void SourcesEditorWidget::setFboSource(std::string & fboName){
 	videoSelector->unselectAll();
 	imageSelector->unselectAll();
+    usbSelector->unselectAll();
 
 	// Get selected surface
 	BaseSurface * surface = surfaceManager->getSelectedSurface();
@@ -300,6 +342,60 @@ void SourcesEditorWidget::setFboSource(std::string & fboName){
 	surface->setSource(mediaServer->loadFboSource(fboName));
 }
 
+void SourcesEditorWidget::handleUsbMediaSelected(std::string &filePath){
+    std::vector<std::string> extParts = ofSplitString(filePath, ".");
+    // And get only the last piece
+    std::string ext = extParts[extParts.size() - 1];
+    int sourceType = SourceType::SOURCE_TYPE_NONE;
+
+    if(ext == "mp4" || ext == "h264" || ext == "mov" || ext == "avi" || ext == "ogv" || ext == "mpeg" || ext == "mkv"){
+        sourceType = SourceType::SOURCE_TYPE_VIDEO;
+    }else if(ext == "png" || ext == "jpg" || ext == "jpeg"){
+        sourceType = SourceType::SOURCE_TYPE_IMAGE;
+    }
+    
+    _cmdManager->exec(new SetSourceCmd(SourceType::SOURCE_TYPE_USB,
+                                       filePath,
+                                       surfaceManager->getSelectedSurface(),
+                                       (SourcesEditorWidget *)this));
+}
+
+void SourcesEditorWidget::setUsbSource(std::string &filePath){
+    // Unselect any selected items
+    fboSelector->unselectAll();
+    imageSelector->unselectAll();
+    videoSelector->unselectAll();
+    ofLog() << "setUsbSource :" << filePath;
+    
+    BaseSurface * surface = surfaceManager->getSelectedSurface();
+    if(surface == 0){
+        ofLogWarning("SourcesEditorWidget") << "No surface selected";
+        return;
+    }
+    
+    std::string ext = ofFilePath::getFileExt(filePath);
+
+    int sourceType = SourceType::SOURCE_TYPE_NONE;
+    
+    if(ext == "mp4" || ext == "h264" || ext == "mov" || ext == "avi" || ext == "ogv" || ext == "mpeg" || ext == "mkv"){
+        sourceType = SourceType::SOURCE_TYPE_VIDEO;
+    }else if(ext == "png" || ext == "jpg" || ext == "jpeg"){
+        sourceType = SourceType::SOURCE_TYPE_IMAGE;
+    }
+    
+    BaseSource * source = surface->getSource();
+    if(source->isLoadable()){
+        mediaServer->unloadMedia(source->getPath());
+    }else{
+        mediaServer->unloadMedia(source->getName());
+    }
+    if(sourceType == SourceType::SOURCE_TYPE_IMAGE){
+        surface->setSource(mediaServer->loadImage(filePath));
+    }else if(sourceType == SourceType::SOURCE_TYPE_VIDEO){
+        surface->setSource(mediaServer->loadVideo(filePath));
+    }
+}
+    
 void SourcesEditorWidget::clearSource(){
 	BaseSurface * surface = surfaceManager->getSelectedSurface();
 

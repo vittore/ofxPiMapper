@@ -35,6 +35,7 @@ class SourcesEditorWidget {
 		void setImageSource(std::string & imagePath);
 		void setVideoSource(std::string & videoPath);
 		void setFboSource(std::string & fboName);
+        void setUsbSource(std::string &mediaName);
 		void clearSource();
 
 	private:
@@ -43,10 +44,12 @@ class SourcesEditorWidget {
 		RadioList * imageSelector;
 		RadioList * videoSelector;
 		RadioList * fboSelector;
+        RadioList * usbSelector;
 		CmdManager * _cmdManager;
 	
 		// Methods for creating and destroying the source selectors
 		void createSelectors();
+        void destroySelectors();
 
 		// Methods for adding and removing listeners to the media server
 		void addMediaServerListeners();
@@ -56,6 +59,7 @@ class SourcesEditorWidget {
 		void handleImageSelected(std::string & imagePath);
 		void handleVideoSelected(std::string & videoPath);
 		void handleFboSelected(std::string & fboName);
+        void handleUsbMediaSelected(std::string &filePath);
 
 		// Careful clearing of the media server,
 		// clears only if the media server has been initialized locally
