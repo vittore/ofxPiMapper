@@ -91,8 +91,8 @@ class ofxPiMapper {
 		// Sources, selected surface
 		void setNextSource();
 		void setFboSource(std::string sourceId);
-		void setVideoSource(std::string fileName, bool loop);
-		void setImageSource(std::string fileName);
+//        void setVideoSource(std::string fileName, bool loop);
+//        void setImageSource(std::string fileName);
 		void setDrawGui(bool drawGui);
 
 		// System commands

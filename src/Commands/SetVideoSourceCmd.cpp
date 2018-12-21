@@ -23,7 +23,7 @@ void SetVideoSourceCmd::exec(){
 		_oldSourceId = _surface->getSource()->getName();
 	}
 
-	_sourcesEditor->setVideoSource(_sourceId);
+    _sourcesEditor->setFileSource(_sourceId, SourceType::SOURCE_TYPE_VIDEO);
 	BaseSource * src = _surface->getSource();
 	VideoSource * vid = dynamic_cast<VideoSource *>(src);
 	vid->setLoop(_loop);
@@ -33,9 +33,9 @@ void SetVideoSourceCmd::undo(){
 	ofLogNotice("SetVideoSourceCmd", "undo");
 
 	if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_IMAGE){
-		_sourcesEditor->setImageSource(_oldSourceId);
+        _sourcesEditor->setFileSource(_oldSourceId, _oldSourceTypeHelper);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_VIDEO){
-		_sourcesEditor->setVideoSource(_oldSourceId);
+        _sourcesEditor->setFileSource(_oldSourceId, _oldSourceTypeHelper);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_oldSourceId);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_NONE){

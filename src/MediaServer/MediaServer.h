@@ -10,11 +10,13 @@
 #include "FboSource.h"
 #include "SourceType.h"
 
+#define DEFAULT_SOURCE_DIR "sources/"
 #define DEFAULT_IMAGES_DIR "sources/images/"
 #define DEFAULT_VIDEOS_DIR "sources/videos/"
 
 #define PI_IMAGES_DIR "/boot/ofxpimapper/sources/images/"
 #define PI_VIDEOS_DIR "/boot/ofxpimapper/sources/videos/"
+#define SD_MEDIA_DIR "/boot/media/"
 
 /* 
  * These you can get when you apt-get install usbmount
@@ -59,19 +61,16 @@ class MediaServer {
         void pause();
         void resume();
 
-		int getNumVideos();
-		int getNumImages();
 		int getNumFboSources(); // new
-        int getNumUsbMedias();
+
+        void reloadDirectory();
     
-        void reloadMediaDirectory();
-		std::vector<std::string> & getVideoPaths();
-		std::vector<std::string>  getVideoNames();
-		std::vector<std::string> & getImagePaths();
-		std::vector<std::string>  getImageNames();
+        std::vector<std::string> getDirectoryNames();
+        std::vector<std::string> getDirectoryFilePaths(std::string & name);
+        std::vector<std::string> getDirectoryFileNames(std::string & name);
+    
 		std::vector<std::string>  getFboSourceNames(); // new
-        std::vector<std::string> & getUsbMediaPaths();
-        std::vector<std::string> getUsbMediaNames();
+    
 
 		BaseSource * loadMedia(std::string & path, int mediaType);
 		BaseSource * loadImage(std::string & path);
@@ -108,22 +107,7 @@ class MediaServer {
 		ofEvent <std::string> onFboSourceUnloaded;
 
 	private:
-		// Directory Watchers
-		DirectoryViewer videoWatcher;
-		DirectoryWatcher piVideoWatcher;
-//        DirectoryWatcher usb0VideoWatcher;
-//        DirectoryWatcher usb1VideoWatcher;
-//        DirectoryWatcher usb2VideoWatcher;
-//        DirectoryWatcher usb3VideoWatcher;
-	
-		DirectoryViewer imageWatcher;
-        DirectoryWatcher piImageWatcher;
-//        DirectoryWatcher usb0ImageWatcher;
-//        DirectoryWatcher usb1ImageWatcher;
-//        DirectoryWatcher usb2ImageWatcher;
-//        DirectoryWatcher usb3ImageWatcher;
-    
-        DirectoryViewer usbMediaViewer;
+        map <std::string, DirectoryViewer *> dirViewer;
 	
         std::vector<std::string> _tempImagePaths;
         std::vector<std::string> _tempVideoPaths;

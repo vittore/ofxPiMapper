@@ -26,18 +26,16 @@ void SetNextSourceCmd::exec(){
 	MediaServer * mediaServer = _sourcesEditor->getMediaServer();
 	
 	// Read sources into a single vector
-	for(unsigned int i = 0; i < mediaServer->getImagePaths().size(); ++i){
-		SourceData data;
-		data.type = SourceType::SOURCE_TYPE_IMAGE;
-		data.id = mediaServer->getImagePaths()[i];
-		_sources.push_back(data);
-	}
-	for(unsigned int i = 0; i < mediaServer->getVideoPaths().size(); ++i){
-		SourceData data;
-		data.type = SourceType::SOURCE_TYPE_VIDEO;
-		data.id = mediaServer->getVideoPaths()[i];
-		_sources.push_back(data);
-	}
+    std::vector<std::string> dirNames = mediaServer->getDirectoryNames();
+    for(int i=0; i<dirNames.size(); i++){
+        std::vector<std::string> paths = mediaServer->getDirectoryFilePaths(dirNames[i]);
+        for(int j=0; j<paths.size(); j++){
+            SourceData data;
+            data.type = SourceTypeHelper::GetSourceTypeHelperEnumByFile(paths[j]);
+            data.id = paths[j];
+            _sources.push_back(data);
+        }
+    }
 	for(unsigned int i = 0; i < mediaServer->getFboSourceNames().size(); ++i){
 		SourceData data;
 		data.type = SourceType::SOURCE_TYPE_FBO;
@@ -73,9 +71,9 @@ void SetNextSourceCmd::exec(){
 	}
 
     if(_sources[_nextSourceIndex].type == SourceType::SOURCE_TYPE_IMAGE){
-		_sourcesEditor->setImageSource(_sources[_nextSourceIndex].id);
+        _sourcesEditor->setFileSource(_sources[_nextSourceIndex].id, _sources[_nextSourceIndex].type);
 	}else if(_sources[_nextSourceIndex].type == SourceType::SOURCE_TYPE_VIDEO){
-		_sourcesEditor->setVideoSource(_sources[_nextSourceIndex].id);
+        _sourcesEditor->setFileSource(_sources[_nextSourceIndex].id, _sources[_nextSourceIndex].type);
 	}else if(_sources[_nextSourceIndex].type == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_sources[_nextSourceIndex].id);
 	}else if(_sources[_nextSourceIndex].type == SourceType::SOURCE_TYPE_NONE){
@@ -89,9 +87,9 @@ void SetNextSourceCmd::undo(){
 	ofLogNotice("SetNextSourceCmd", "undo");
 
     if(_sources[_sourceIndex].type == SourceType::SOURCE_TYPE_IMAGE){
-		_sourcesEditor->setImageSource(_sources[_sourceIndex].id);
+        _sourcesEditor->setFileSource(_sources[_sourceIndex].id, _sources[_sourceIndex].type);
 	}else if(_sources[_sourceIndex].type == SourceType::SOURCE_TYPE_VIDEO){
-		_sourcesEditor->setVideoSource(_sources[_sourceIndex].id);
+        _sourcesEditor->setFileSource(_sources[_sourceIndex].id, _sources[_sourceIndex].type);
 	}else if(_sources[_sourceIndex].type == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_sources[_sourceIndex].id);
 	}else if(_sources[_sourceIndex].type == SourceType::SOURCE_TYPE_NONE){

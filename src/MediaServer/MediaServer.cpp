@@ -3,23 +3,27 @@
 namespace ofx {
 namespace piMapper {
 
-MediaServer::MediaServer():
-    piVideoWatcher(PI_IMAGES_DIR, SourceType::SOURCE_TYPE_VIDEO),
+MediaServer::MediaServer()
+//    piVideoWatcher(PI_IMAGES_DIR, SourceType::SOURCE_TYPE_VIDEO),
 //    usb0VideoWatcher(USB0_VIDEOS_DIR, SourceType::SOURCE_TYPE_VIDEO),
 //    usb1VideoWatcher(USB1_VIDEOS_DIR, SourceType::SOURCE_TYPE_VIDEO),
 //    usb2VideoWatcher(USB2_VIDEOS_DIR, SourceType::SOURCE_TYPE_VIDEO),
 //    usb3VideoWatcher(USB3_VIDEOS_DIR, SourceType::SOURCE_TYPE_VIDEO),
-    piImageWatcher(PI_IMAGES_DIR, SourceType::SOURCE_TYPE_IMAGE),
+//    piImageWatcher(PI_IMAGES_DIR, SourceType::SOURCE_TYPE_IMAGE),
 //    usb0ImageWatcher(USB0_IMAGES_DIR, SourceType::SOURCE_TYPE_IMAGE),
 //    usb1ImageWatcher(USB1_IMAGES_DIR, SourceType::SOURCE_TYPE_IMAGE),
 //    usb2ImageWatcher(USB2_IMAGES_DIR, SourceType::SOURCE_TYPE_IMAGE),
 //    usb3ImageWatcher(USB3_IMAGES_DIR, SourceType::SOURCE_TYPE_IMAGE),
 //    imageWatcher(ofToDataPath(DEFAULT_IMAGES_DIR, false), SourceType::SOURCE_TYPE_IMAGE),
 //    videoWatcher(ofToDataPath(DEFAULT_VIDEOS_DIR, false), SourceType::SOURCE_TYPE_VIDEO),
-    imageWatcher(ofToDataPath(DEFAULT_IMAGES_DIR, false)),
-    videoWatcher(ofToDataPath(DEFAULT_VIDEOS_DIR, false)),
-    usbMediaViewer(USB0_VIDEOS_DIR)
+//    imageWatcher(ofToDataPath(DEFAULT_IMAGES_DIR, false)),
+//    videoWatcher(ofToDataPath(DEFAULT_VIDEOS_DIR, false)),
+//    usbMediaViewer(USB0_VIDEOS_DIR)
 {
+    dirViewer["Default"] = new DirectoryViewer(DEFAULT_SOURCE_DIR);
+    dirViewer["Media"] = new DirectoryViewer(SD_MEDIA_DIR);
+    dirViewer["USB"] = new DirectoryViewer(USB0_VIDEOS_DIR);
+    
 	// By initialising all above we also copy files from external media
 	// to the ofxPiMapper storage.
 //    imageWatcher.beginWatch();
@@ -97,40 +101,40 @@ void MediaServer::resume() {
         }
     }
 }
+
     
-int MediaServer::getNumImages(){
-	
-	return imageWatcher.getFilePaths().size();
+std::vector<std::string> MediaServer::getDirectoryNames(){
+    std::vector<std::string> dirNames;
+    
+    map<std::string, DirectoryViewer*>::iterator iter;
+    for(iter = dirViewer.begin(); iter != dirViewer.end(); iter++){
+        dirNames.push_back(iter->first);
+    }
+    return dirNames;
 }
-int MediaServer::getNumVideos(){
-	return videoWatcher.getFilePaths().size();
+    
+std::vector<std::string> MediaServer::getDirectoryFilePaths(std::string & name){
+    return dirViewer[name]->getFilePaths();
 }
+std::vector<std::string> MediaServer::getDirectoryFileNames(std::string & name){
+    std::vector<std::string> names;
+    std::vector<std::string> paths = getDirectoryFilePaths(name);
+    for(int i=0; i<paths.size(); i++) {
+        names.push_back(ofFilePath::getFileName(paths[i]));
+    }
+    return names;
+}
+    
 int MediaServer::getNumFboSources(){
-	return fboSources.size();
-}
-int MediaServer::getNumUsbMedias(){
-    return usbMediaViewer.getFilePaths().size();
+    return fboSources.size();
 }
 
-void MediaServer::reloadMediaDirectory(){
-    usbMediaViewer.reload();
-}
-    
-std::vector<std::string> & MediaServer::getImagePaths(){
-	return imageWatcher.getFilePaths();
-}
 
-std::vector<std::string> MediaServer::getImageNames(){
-	std::vector<std::string> imageNames;
-	for(int i = 0; i < getNumImages(); i++){
-		// Split image path
-//        std::vector<std::string> pathParts = ofSplitString(getImagePaths()[i], "/");
-		// And get only the last piece
-//        std::string name = pathParts[pathParts.size() - 1];
-        std::string name = ofFilePath::getFileName(getImagePaths()[i]);
-		imageNames.push_back(name);
-	}
-	return imageNames;
+void MediaServer::reloadDirectory(){
+    map<std::string, DirectoryViewer*>::iterator iter;
+    for(iter = dirViewer.begin(); iter != dirViewer.end(); iter++){
+        iter->second->reload();
+    }
 }
 
 std::vector<std::string> MediaServer::getFboSourceNames(){
@@ -140,39 +144,7 @@ std::vector<std::string> MediaServer::getFboSourceNames(){
 	}
 	return fboSourceNames;
 }
-
-std::vector<std::string> & MediaServer::getVideoPaths(){
-	return videoWatcher.getFilePaths();
-}
-
-std::vector<std::string> MediaServer::getVideoNames(){
-	std::vector<std::string> videoNames;
-	for(int i = 0; i < getNumVideos(); i++){
-		// Split video path
-//        std::vector<std::string> pathParts = ofSplitString(getVideoPaths()[i], "/");
-		// And get only the last piece
-//        std::string name = pathParts[pathParts.size() - 1];
-        std::string name = ofFilePath::getFileName(getVideoPaths()[i]);
-		videoNames.push_back(name);
-	}
-	return videoNames;
-}
-
-std::vector<std::string> & MediaServer::getUsbMediaPaths(){
-    return usbMediaViewer.getFilePaths();
-}
     
-std::vector<std::string> MediaServer::getUsbMediaNames(){
-    std::vector<std::string> mediaNames;
-
-    for(int i = 0; i< getNumUsbMedias(); i++) {
-        std::string name = ofFilePath::getFileName(getUsbMediaPaths()[i]);
-        mediaNames.push_back(name);
-    }
-    return mediaNames;
-}
-    
-
 BaseSource * MediaServer::loadMedia(std::string & path, int mediaType){
 	// Chose load method depending on type
 	if(mediaType == SourceType::SOURCE_TYPE_IMAGE){

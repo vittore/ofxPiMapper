@@ -26,25 +26,24 @@ class SourcesEditorWidget {
 		// Sets external MediaServer
 		void setMediaServer(MediaServer * newMediaServer);
 		MediaServer * getMediaServer();
-		//void selectImageSourceRadioButton(std::string name);
+
 		void selectSourceRadioButton(std::string & sourcePath);
 
 		int getLoadedTexCount();
 		ofTexture * getTexture(int index);
 
-		void setImageSource(std::string & imagePath);
-		void setVideoSource(std::string & videoPath);
 		void setFboSource(std::string & fboName);
-        void setUsbSource(std::string &mediaName);
+        void setFileSource(std::string &filePath, int sourceType);
 		void clearSource();
 
 	private:
 		MediaServer * mediaServer;
 		SurfaceManager * surfaceManager;
-		RadioList * imageSelector;
-		RadioList * videoSelector;
+
 		RadioList * fboSelector;
-        RadioList * usbSelector;
+    
+        map <std::string, RadioList*> dirSelector;
+    
 		CmdManager * _cmdManager;
 	
 		// Methods for creating and destroying the source selectors
@@ -56,10 +55,8 @@ class SourcesEditorWidget {
 		void removeMediaServerListeners();
 
 		// Handles GUI event, whenever someone has clicked on a radio button
-		void handleImageSelected(std::string & imagePath);
-		void handleVideoSelected(std::string & videoPath);
 		void handleFboSelected(std::string & fboName);
-        void handleUsbMediaSelected(std::string &filePath);
+        void handleFileSelected(std::string &filePath);
 
 		// Careful clearing of the media server,
 		// clears only if the media server has been initialized locally

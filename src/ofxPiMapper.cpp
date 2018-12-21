@@ -205,13 +205,13 @@ void ofxPiMapper::setFboSource(std::string sourceId){
 	_application.setFboSource(sourceId);
 }
 
-void ofxPiMapper::setVideoSource(std::string fileName, bool loop){
-	_application.setVideoSource(fileName, loop);
-}
-
-void ofxPiMapper::setImageSource(std::string fileName){
-	_application.setImageSource(fileName);
-}
+//void ofxPiMapper::setVideoSource(std::string fileName, bool loop){
+//    _application.setVideoSource(fileName, loop);
+//}
+//
+//void ofxPiMapper::setImageSource(std::string fileName){
+//    _application.setImageSource(fileName);
+//}
 
 void ofxPiMapper::setDrawGui(bool drawGui){
 	_application.setDrawGui(drawGui);

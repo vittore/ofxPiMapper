@@ -25,14 +25,14 @@ void SetSourceCmd::exec(){
 	}
 
 	if(_sourceType == SourceType::SOURCE_TYPE_IMAGE){
-		_sourcesEditor->setImageSource(_sourceId);
+//        _sourcesEditor->setImageSource(_sourceId);
+        _sourcesEditor->setFileSource(_sourceId, _sourceType);
 	}else if(_sourceType == SourceType::SOURCE_TYPE_VIDEO){
-		_sourcesEditor->setVideoSource(_sourceId);
+//        _sourcesEditor->setVideoSource(_sourceId);
+        _sourcesEditor->setFileSource(_sourceId, _sourceType);
 	}else if(_sourceType == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_sourceId);
-    }else if(_sourceType == SourceType::SOURCE_TYPE_USB){
-        _sourcesEditor->setUsbSource(_sourceId);
-	}else if(_sourceType == SourceType::SOURCE_TYPE_NONE){
+    }else if(_sourceType == SourceType::SOURCE_TYPE_NONE){
 		_sourcesEditor->clearSource();
 	}
 }
@@ -41,13 +41,13 @@ void SetSourceCmd::undo(){
 	ofLogNotice("SetSourceCmd", "undo");
 
 	if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_IMAGE){
-		_sourcesEditor->setImageSource(_oldSourceId);
+//        _sourcesEditor->setImageSource(_oldSourceId);
+        _sourcesEditor->setFileSource(_oldSourceId, _oldSourceTypeHelper);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_VIDEO){
-		_sourcesEditor->setVideoSource(_oldSourceId);
+//        _sourcesEditor->setVideoSource(_oldSourceId);
+        _sourcesEditor->setFileSource(_oldSourceId, _oldSourceTypeHelper);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_FBO){
 		_sourcesEditor->setFboSource(_oldSourceId);
-    }else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_USB){
-        _sourcesEditor->setUsbSource(_oldSourceId);
 	}else if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_NONE){
 		_sourcesEditor->clearSource();
 	}
