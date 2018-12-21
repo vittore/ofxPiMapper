@@ -7,8 +7,7 @@ enum SourceType {
 	SOURCE_TYPE_NONE,
 	SOURCE_TYPE_IMAGE,
 	SOURCE_TYPE_VIDEO,
-	SOURCE_TYPE_FBO,
-    SOURCE_TYPE_USB
+	SOURCE_TYPE_FBO
 };
 
 } // namespace piMapper

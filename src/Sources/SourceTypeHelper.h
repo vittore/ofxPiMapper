@@ -50,8 +50,6 @@ class SourceTypeHelper {
         static SourceType GetSourceTypeHelperEnumByFile(std::string & filePath){
             std::string ext = ofFilePath::getFileExt(filePath);
             
-            int sourceType = SourceType::SOURCE_TYPE_NONE;
-            
             if(ext == "mp4" || ext == "h264" || ext == "mov" || ext == "avi" || ext == "ogv" || ext == "mpeg" || ext == "mkv"){
                 return SOURCE_TYPE_VIDEO;
             }else if(ext == "png" || ext == "jpg" || ext == "jpeg"){

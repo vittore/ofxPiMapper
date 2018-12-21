@@ -25,7 +25,6 @@ void SourcesEditorWidget::destroySelectors(){
     }
 
     fboSelector->clear();
-
 }
 
 void SourcesEditorWidget::createSelectors(){
@@ -67,20 +66,23 @@ void SourcesEditorWidget::draw(){
 	}
     map <std::string, RadioList*>::iterator iter;
     for(iter = dirSelector.begin(); iter != dirSelector.end(); iter++){
-        iter->second->draw();
+        if(iter->second->size()){
+            iter->second->draw();
+        }
     }
 
 	if(fboSelector->size()){
 		fboSelector->draw();
 	}
-    
 }
 
 // TODO: Redesign the selectors completely so they do not need enable and disable.
 void SourcesEditorWidget::disable(){
     map <std::string, RadioList*>::iterator iter;
     for(iter = dirSelector.begin(); iter != dirSelector.end(); iter++){
-        iter->second->disable();
+        if(iter->second->size()){
+            iter->second->disable();
+        }
     }
 
 	if(fboSelector->size()){
